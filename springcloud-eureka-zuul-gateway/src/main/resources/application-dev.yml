@@ -1,0 +1,59 @@
+
+#eureka配置
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: zuul-gateway
+  client:
+    #该模块仅仅作为网关，并没有服务接口
+    registerWithEureka: false
+    #这个必须，网关要能从eureka节点上拉取服务进行跳转
+    fetchRegistry: true
+    serviceUrl:
+            defaultZone: http://localhost:8761/eureka/
+
+#zuul网关配置
+zuul:
+  #zuul默认为所有服务开启默认的路由，为了服务安全，此处关闭
+  ignored-services: "*"
+  #  服务前缀名，想要访问项目之前要加上此路径
+  #prefix: /fengyuntec
+  #是否开启路由重试
+  retryable: true
+  routes:
+      ##商品微服务路由配置
+      #商品微服务的访问根路径必须是product
+      product.path: /product-service/**
+      # 替换后访问的名称
+      product.service-id: product
+      #是否转发后还带转发特征的字符
+      product.strip-prefix: false
+      ##活动微服务路由##
+      ##活动微服务的访问根路径必须是activity
+      activity.path: /activity/**
+      # 替换后访问的名称
+      activity.service-id: product-provider
+      activity.strip-prefix: false
+
+
+ribbon:
+   #请求连接的超时时间，网关与服务之间建立连接超时时间为6000ms
+   ConnectTimeout: 6000
+   #请求处理的超时时间，网关与服务之间建立连接之后，请求处理超时时间为6000ms
+   ReadTimeout: 6000
+   #对当前服务的重试次数，比如：如果网关转发的请求到product-service,而product-service要处理至少7000ms，超时了，就会重试，在这里配置重试2次
+   MaxAutoRetries: 2
+   #切换实例的重试次数
+   MaxAutoRetriesNextServer: 0
+   #对所有操作请求都进行重试
+   OkToRetryOnAllOperations: true
+
+
+feign:
+  #开启feign使用hystrix,Spring Cloud默认已经为Feign整合了Hystrix，我们只需要开启
+  hystrix:
+    enabled: true
+
+hystrix:
+  #将 hystrix 的超时时间设置成 5000 毫秒(hystrix超时时间小于ribbon连接超时时间，先走hystrix)
+  command.default.execution.isolation.thread.timeoutInMilliseconds: 2000

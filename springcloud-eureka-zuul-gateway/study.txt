@@ -1,0 +1,14 @@
+服务网关Spring Cloud Zuul：
+https://www.jianshu.com/p/f5cdce29890d
+https://www.cnblogs.com/sxdcgaq8080/p/9982175.html
+
+服务网关zuul之五：熔断
+https://www.cnblogs.com/duanxz/p/9715509.html
+
+
+
+测试：请求网关可以得到想要的结果
+请求网关：
+http://localhost:8764/product-service/user/gao/22
+请求具体的服务：
+http://localhost:8762/product-service/user/gao/22
